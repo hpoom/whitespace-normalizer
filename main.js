@@ -1,4 +1,4 @@
-
+// TODO fix bug where replace to tabs inserts a tab over first space but leaves second space
 /* global brackets, define */
 
 define(function (/* require, exports, module */) {
@@ -15,7 +15,7 @@ define(function (/* require, exports, module */) {
     doc.batchOperation(function () {
       var line,
         lineIndex = 0,
-        indent = new Array(getIndentSize(Editor) + 1).join(' '),
+        indent = setIndentChar(Editor),
         pattern,
         match;
 
@@ -34,6 +34,7 @@ define(function (/* require, exports, module */) {
 
         //transform tabs to spaces
         pattern = /\t/g;
+        // pattern = /[ ]{2}/g;
         match = pattern.exec(line);
         while (match) {
           doc.replaceRange(
@@ -68,6 +69,10 @@ define(function (/* require, exports, module */) {
         editor.getSpaceUnits() /* Sprint 22+ */ :
         editor.getIndentUnit()
       );
+  }
+
+  function setIndentChar(editor) {
+    return editor.getUseTabChar() ? '\t': new Array(getIndentSize(editor) + 1).join(' ');
   }
 
   function setEnabled(prefs, command, enabled) {
